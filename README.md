@@ -1,21 +1,21 @@
-# 🥑 Avocado Ripeness Detection
+# Avocado Ripeness Detection
 
 Aplikasi deteksi tingkat kematangan alpukat menggunakan Deep Learning (VGG16/VGG19).
 
-## 📦 Instalasi
+## Instalasi
 
 ```bash
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-## 📥 Download Model
+## Download Model
 
 Download model dari Google Drive dan letakkan di folder `models/`:
 
 **Link:** [https://drive.google.com/drive/folders/1a0AFiSGmmB855IhO3Y4BpxYfziS7CX20?usp=drive_link](https://drive.google.com/drive/folders/1a0AFiSGmmB855IhO3Y4BpxYfziS7CX20?usp=drive_link)
 
-## 🚀 Jalankan Aplikasi
+##  Jalankan Aplikasi
 
 ```bash
 python app.py
@@ -23,7 +23,7 @@ python app.py
 
 Buka browser: `http://localhost:5000`
 
-## 📝 Cara Pakai
+##  Cara Pakai
 
 1. Pilih model (VGG16 Flatten/GAP atau VGG19)
 2. Upload gambar alpukat
@@ -32,4 +32,4 @@ Buka browser: `http://localhost:5000`
 
 ---
 
-**Author:** Zephhyyrr
+**Author:** Firman Ardiansyah (Zephhyyrr)
