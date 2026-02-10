@@ -1,0 +1,5 @@
+# Ignore static folder
+static/
+
+# Ignore model files (too large for GitHub)
+models/*.keras
