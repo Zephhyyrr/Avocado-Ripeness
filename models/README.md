@@ -6,7 +6,7 @@ Model files are not included in this repository due to their large size (total ~
 
 Please download the model files from one of the following sources:
 
-- **Google Drive**: [Add your link here]
+- **Google Drive**: [https://drive.google.com/drive/folders/1a0AFiSGmmB855IhO3Y4BpxYfziS7CX20?usp=drive_link]
 
 ## Required Files
 
