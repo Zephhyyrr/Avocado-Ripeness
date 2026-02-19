@@ -100,6 +100,10 @@
             margin: 10px 0 5px 0;
         }
 
+        .prediction-value.uncertain {
+            color: #e74c3c;
+        }
+
         .confidence {
             font-size: 0.9em;
             color: #7f8c8d;
@@ -107,6 +111,26 @@
             display: inline-block;
             padding: 5px 12px;
             border-radius: 20px;
+        }
+
+        .confidence.uncertain {
+            background: #fadbd8;
+            color: #c0392b;
+        }
+
+        .result-card.uncertain {
+            border: 2px solid #e74c3c;
+            background: #fff5f5;
+        }
+
+        .warning-message {
+            font-size: 0.85em;
+            color: #e67e22;
+            margin-top: 8px;
+            padding: 8px;
+            background: #fef5e7;
+            border-radius: 10px;
+            line-height: 1.4;
         }
 
         /* Actions */
@@ -158,14 +182,20 @@
 
         <div class="results-grid">
             {% for res in results %}
-            <div class="result-card">
+            <div class="result-card {% if res.prediction == 'Bukan Alpukat' %}uncertain{% endif %}">
                 <div class="image-box">
                     <img src="{{ url_for('static', filename='uploads/' + res.image_filename) }}" alt="Avocado"
                         class="preview">
                 </div>
                 <div>
-                    <div class="prediction-value">{{ res.prediction }}</div>
-                    <div class="confidence">{{ "%.2f"|format(res.confidence * 100) }}%</div>
+                    <div class="prediction-value {% if res.prediction == 'Bukan Alpukat' %}uncertain{% endif %}">
+                        {% if res.prediction == 'Bukan Alpukat' %}⚠️ {% endif %}{{ res.prediction }}
+                    </div>
+                    <div class="confidence {% if res.prediction == 'Bukan Alpukat' %}uncertain{% endif %}">
+                        {{ "%.2f"|format(res.confidence * 100) }}%
+                    </div>
+                    {% if res.prediction == 'Bukan Alpukat' %}
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}

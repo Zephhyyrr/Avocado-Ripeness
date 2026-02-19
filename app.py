@@ -59,10 +59,15 @@ def predict():
             pred_probs = model.predict(img_array)[0]
             pred_idx = np.argmax(pred_probs)
             confidence = float(np.max(pred_probs))
-            predicted_class = config.CLASS_LABELS[pred_idx]
             
-            # Graph generation removed
-            graph_full_path = None
+            # Get threshold for this model
+            threshold = config.MODEL_THRESHOLDS.get(selected_model_name, config.DEFAULT_THRESHOLD)
+            
+            # Check if confidence meets threshold
+            if confidence >= threshold:
+                predicted_class = config.CLASS_LABELS[pred_idx]
+            else:
+                predicted_class = "Bukan Alpukat"
             
             results.append({
                 'image_filename': save_filename,

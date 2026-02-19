@@ -9,6 +9,13 @@ MODELS_FOLDER = os.path.join(BASE_DIR, 'models')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 CLASS_LABELS = {0: 'Matang', 1: 'Mentah', 2: 'Setengah Matang'}
 
+# Model-specific confidence thresholds
+MODEL_THRESHOLDS = {
+    'vgg16_Flatten.keras': 0.78,
+    'vgg16_GAP.keras': 0.70,
+    'vgg19_Flatten.keras': 0.80, 
+}
+
 # Ensure directories exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GRAPH_FOLDER, exist_ok=True)
