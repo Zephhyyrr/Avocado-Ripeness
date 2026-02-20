@@ -10,6 +10,15 @@
 </head>
 
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="big-spinner"></div>
+            <div class="loading-text">Analyzing Images</div>
+            <div class="loading-subtext">Please wait while AI processes your avocados...</div>
+        </div>
+    </div>
+
     <div class="container">
         <h1>🥑 Avocado Check</h1>
         <p class="subtitle">Quickly detect ripeness using AI</p>
@@ -102,6 +111,15 @@
             // Submit form with fetch
             e.preventDefault();
             
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.add('active');
+            
+            // Also update button state
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner"></span>Analyzing...';
+            
             fetch('/predict', {
                 method: 'POST',
                 body: formData
@@ -117,9 +135,18 @@
                 document.write(html);
                 document.close();
             })
+            .finally(() => {
+                // Reset loading state on error or success
+                loadingOverlay.classList.remove('active');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Analyze Now';
+            })
             .catch(error => {
                 console.error('Error:', error);
                 alert('Error processing images');
+                // Reset button state on error
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Analyze Now';
             });
         });
     </script>
