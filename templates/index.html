@@ -146,6 +146,69 @@
             font-size: 0.9em;
             word-break: break-all;
         }
+
+        /* Preview Images */
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .preview-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+
+        .preview-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            padding: 0;
+        }
+
+        .remove-btn:hover {
+            background: rgba(192, 57, 43, 1);
+            transform: scale(1.1);
+        }
+
+        .file-info {
+            padding: 8px;
+            font-size: 0.75em;
+            color: #555;
+            background: white;
+            text-align: center;
+            word-break: break-word;
+        }
     </style>
 </head>
 
@@ -170,29 +233,98 @@
                 <label>Upload Images (Select Multiple)</label>
                 <div class="file-upload">
                     <span class="file-label-text">Select or Drag Images Here</span>
-                    <input type="file" name="file" id="file" accept=".png, .jpg, .jpeg" multiple required
-                        onchange="updateFileName(this)">
+                    <input type="file" id="file" accept=".png, .jpg, .jpeg" multiple
+                        onchange="handleFileSelect(this)">
                 </div>
-                <div id="file-name"></div>
+                <div id="preview-container" class="preview-container"></div>
             </div>
 
-            <button type="submit">Analyze Now</button>
+            <button type="submit" id="submit-btn">Analyze Now</button>
         </form>
     </div>
 
     <script>
-        function updateFileName(input) {
-            const fileNameDisplay = document.getElementById('file-name');
-            if (input.files && input.files.length > 0) {
-                if (input.files.length === 1) {
-                    fileNameDisplay.textContent = "Selected: " + input.files[0].name;
-                } else {
-                    fileNameDisplay.textContent = "Selected " + input.files.length + " files";
-                }
-            } else {
-                fileNameDisplay.textContent = "";
-            }
+        let selectedFiles = [];
+
+        function handleFileSelect(input) {
+            const newFiles = Array.from(input.files);
+            selectedFiles = [...selectedFiles, ...newFiles];
+            displayPreviews();
+            input.value = ''; // Reset input untuk bisa select file yang sama lagi
         }
+
+        function displayPreviews() {
+            const container = document.getElementById('preview-container');
+            container.innerHTML = '';
+
+            if (selectedFiles.length === 0) {
+                return;
+            }
+
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="${file.name}">
+                        <button type="button" class="remove-btn" onclick="removeFile(${index})" title="Remove">×</button>
+                        <div class="file-info">${file.name}</div>
+                    `;
+                    
+                    container.appendChild(previewItem);
+                };
+                
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displayPreviews();
+        }
+
+        // Update form submission to use selectedFiles
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (selectedFiles.length === 0) {
+                e.preventDefault();
+                alert('Please select at least one image');
+                return false;
+            }
+
+            // Create new FormData and add files
+            const formData = new FormData(this);
+            formData.delete('file'); // Remove any existing files
+            
+            selectedFiles.forEach(file => {
+                formData.append('file', file);
+            });
+
+            // Submit form with fetch
+            e.preventDefault();
+            
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Network response was not ok');
+            })
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error processing images');
+            });
+        });
     </script>
 </body>
 
