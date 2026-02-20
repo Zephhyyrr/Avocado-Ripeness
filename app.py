@@ -1,7 +1,7 @@
 import os
 import uuid
 import numpy as np
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 from werkzeug.utils import secure_filename
 
 # Import Modules
@@ -15,6 +15,10 @@ app.config['UPLOAD_FOLDER'] = config.UPLOAD_FOLDER
 app.config['GRAPH_FOLDER'] = config.GRAPH_FOLDER
 
 # --- ROUTES ---
+@app.route('/styles/<path:filename>')
+def serve_styles(filename):
+    return send_from_directory(os.path.join(app.template_folder, 'styles'), filename)
+
 @app.route('/', methods=['GET'])
 def index():
     models = model_handler.get_available_models()
