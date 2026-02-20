@@ -60,14 +60,18 @@ def predict():
             pred_idx = np.argmax(pred_probs)
             confidence = float(np.max(pred_probs))
             
-            # Get threshold for this model
-            threshold = config.MODEL_THRESHOLDS.get(selected_model_name, config.DEFAULT_THRESHOLD)
+            # Get threshold for this model (if exists)
+            threshold = config.MODEL_THRESHOLDS.get(selected_model_name)
             
             # Check if confidence meets threshold
-            if confidence >= threshold:
-                predicted_class = config.CLASS_LABELS[pred_idx]
+            if threshold is not None:
+                if confidence >= threshold:
+                    predicted_class = config.CLASS_LABELS[pred_idx]
+                else:
+                    predicted_class = "Bukan Alpukat"
             else:
-                predicted_class = "Bukan Alpukat"
+                # No threshold for this model, use prediction directly
+                predicted_class = config.CLASS_LABELS[pred_idx]
             
             results.append({
                 'image_filename': save_filename,
